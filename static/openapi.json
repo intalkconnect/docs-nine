@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Ninebasic API",
+    "title": "NineChat API",
     "version": "1.0.0",
-    "description": "Especificação gerada automaticamente a partir das rotas encontradas no código. **Revise e complemente** com schemas, parâmetros e exemplos."
+    "description": "API oficial da NineChat. Autenticação via Bearer Token no header `Authorization: Bearer <token>`.\n\nEsta especificação foi sanitizada para organização das rotas, remoção de endpoints auxiliares (`connect`, `profile`) e padronização de nomes."
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
+      "url": "http://{id}.ninechat.com.br",
       "description": "Dev"
     }
   ],
@@ -17,7 +17,7 @@
         "tags": [
           "agents"
         ],
-        "summary": "routes/atendentes.js",
+        "summary": "List Agents",
         "description": "routes/atendentes.js\n------------ Rotas principais ------------\n🔄 Listar todos os atendentes",
         "operationId": "get_api_v1_agents",
         "parameters": [],
@@ -35,7 +35,7 @@
         ],
         "summary": "⏸️ Pausar atendimento",
         "description": "⏸️ Pausar atendimento",
-        "operationId": "put_api_v1_agents_breaks_email",
+        "operationId": "put_api_v1_agents_breaks_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -81,7 +81,7 @@
         ],
         "summary": "POST /api/v1/agents/presence/{email}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "post_api_v1_agents_presence_email",
+        "operationId": "post_api_v1_agents_presence_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -95,7 +95,7 @@
         ],
         "summary": "PUT /api/v1/agents/presence/{email}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "put_api_v1_agents_presence_email",
+        "operationId": "put_api_v1_agents_presence_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -111,7 +111,7 @@
         ],
         "summary": "▶️ Retomar da pausa",
         "description": "▶️ Retomar da pausa",
-        "operationId": "put_api_v1_agents_resume_email",
+        "operationId": "put_api_v1_agents_resume_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -127,7 +127,7 @@
         ],
         "summary": "🔐 Abrir/atualizar sessão",
         "description": "🔐 Abrir/atualizar sessão",
-        "operationId": "put_api_v1_agents_session_email",
+        "operationId": "put_api_v1_agents_session_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -143,7 +143,7 @@
         ],
         "summary": "GET /api/v1/agents/status/{email}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "get_api_v1_agents_status_email",
+        "operationId": "get_api_v1_agents_status_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -159,7 +159,7 @@
         ],
         "summary": "PATCH /api/v1/agents/status/{session}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "patch_api_v1_agents_status_session",
+        "operationId": "patch_api_v1_agents_status_session_",
         "parameters": [],
         "responses": {
           "200": {
@@ -173,7 +173,7 @@
         ],
         "summary": "POST /api/v1/agents/status/{session}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "post_api_v1_agents_status_session",
+        "operationId": "post_api_v1_agents_status_session_",
         "parameters": [],
         "responses": {
           "200": {
@@ -187,7 +187,7 @@
         ],
         "summary": "PUT /api/v1/agents/status/{session}",
         "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "put_api_v1_agents_status_session",
+        "operationId": "put_api_v1_agents_status_session_",
         "parameters": [],
         "responses": {
           "200": {
@@ -203,7 +203,7 @@
         ],
         "summary": "🔍 Buscar atendente por email",
         "description": "🔍 Buscar atendente por email",
-        "operationId": "get_api_v1_agents_email",
+        "operationId": "get_api_v1_agents_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -219,7 +219,7 @@
         ],
         "summary": "🗑️ Excluir atendente",
         "description": "🗑️ Excluir atendente",
-        "operationId": "delete_api_v1_agents_id",
+        "operationId": "delete_api_v1_agents_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -283,7 +283,7 @@
         ],
         "summary": "* ==================================",
         "description": "* ==================================\n   *  Métricas - Aging do backlog (snapshot atual)\n   * ==================================\n   * GET /analytics/metrics/aging-by-queue",
-        "operationId": "get_api_v1_analytics_metrics_aging-by-queue",
+        "operationId": "get_api_v1_analytics_metrics_aging_by_queue",
         "parameters": [],
         "responses": {
           "200": {
@@ -299,7 +299,7 @@
         ],
         "summary": "* ==================================",
         "description": "* ==================================\n   *  Métricas - Duração por fila\n   * ==================================\n   * GET /analytics/metrics/duration-by-queue?from&to&fila&canal",
-        "operationId": "get_api_v1_analytics_metrics_duration-by-queue",
+        "operationId": "get_api_v1_analytics_metrics_duration_by_queue",
         "parameters": [],
         "responses": {
           "200": {
@@ -363,7 +363,7 @@
         ],
         "summary": "GET /analytics/metrics/new-clients?group=day&from&to",
         "description": "GET /analytics/metrics/new-clients?group=day&from&to",
-        "operationId": "get_api_v1_analytics_metrics_new-clients",
+        "operationId": "get_api_v1_analytics_metrics_new_clients",
         "parameters": [],
         "responses": {
           "200": {
@@ -489,7 +489,7 @@
         ],
         "summary": "DELETE preço",
         "description": "DELETE preço",
-        "operationId": "delete_api_v1_billing_pricing_channel",
+        "operationId": "delete_api_v1_billing_pricing_channel_",
         "parameters": [],
         "responses": {
           "200": {
@@ -503,7 +503,7 @@
         ],
         "summary": "Buscar preço de um canal",
         "description": "Buscar preço de um canal",
-        "operationId": "get_api_v1_billing_pricing_channel",
+        "operationId": "get_api_v1_billing_pricing_channel_",
         "parameters": [],
         "responses": {
           "200": {
@@ -517,7 +517,7 @@
         ],
         "summary": "PATCH preço",
         "description": "PATCH preço",
-        "operationId": "patch_api_v1_billing_pricing_channel",
+        "operationId": "patch_api_v1_billing_pricing_channel_",
         "parameters": [],
         "responses": {
           "200": {
@@ -531,7 +531,7 @@
         ],
         "summary": "PUT preço",
         "description": "PUT preço",
-        "operationId": "put_api_v1_billing_pricing_channel",
+        "operationId": "put_api_v1_billing_pricing_channel_",
         "parameters": [],
         "responses": {
           "200": {
@@ -593,7 +593,7 @@
         "tags": [
           "breaks"
         ],
-        "summary": "routes/pausas.js",
+        "summary": "List Breaks",
         "description": "routes/pausas.js\n========== CRUD: MOTIVOS (pause_reasons) ==========\nListar motivos (opcional ?active=true|false)",
         "operationId": "get_api_v1_breaks",
         "parameters": [],
@@ -689,7 +689,7 @@
         ],
         "summary": "Remover motivo (só se não houver sessões vinculadas)",
         "description": "Remover motivo (só se não houver sessões vinculadas)",
-        "operationId": "delete_api_v1_breaks_id",
+        "operationId": "delete_api_v1_breaks_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -703,7 +703,7 @@
         ],
         "summary": "Buscar um motivo",
         "description": "Buscar um motivo",
-        "operationId": "get_api_v1_breaks_id",
+        "operationId": "get_api_v1_breaks_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -717,7 +717,7 @@
         ],
         "summary": "Atualizar motivo (PATCH)",
         "description": "Atualizar motivo (PATCH)",
-        "operationId": "patch_api_v1_breaks_id",
+        "operationId": "patch_api_v1_breaks_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -731,7 +731,7 @@
         ],
         "summary": "Atualizar motivo (PUT)",
         "description": "Atualizar motivo (PUT)",
-        "operationId": "put_api_v1_breaks_id",
+        "operationId": "put_api_v1_breaks_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -793,7 +793,7 @@
         ],
         "summary": "=============================================================================",
         "description": "=============================================================================\nGET /api/v1/campaigns/:id  → detalhes + agregados\n=============================================================================",
-        "operationId": "get_api_v1_campaigns_id",
+        "operationId": "get_api_v1_campaigns_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -823,7 +823,7 @@
         "tags": [
           "conversations"
         ],
-        "summary": "routes/chatsRoutes.js",
+        "summary": "List Conversations",
         "description": "routes/chatsRoutes.js",
         "operationId": "get_api_v1_conversations",
         "parameters": [],
@@ -889,7 +889,7 @@
         ],
         "summary": "DELETE /clientes/:user_id",
         "description": "DELETE /clientes/:user_id",
-        "operationId": "delete_api_v1_customers_user_id",
+        "operationId": "delete_api_v1_customers_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -903,7 +903,7 @@
         ],
         "summary": "GET /clientes/:user_id",
         "description": "GET /clientes/:user_id",
-        "operationId": "get_api_v1_customers_user_id",
+        "operationId": "get_api_v1_customers_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -917,7 +917,7 @@
         ],
         "summary": "PATCH /clientes/:user_id",
         "description": "PATCH /clientes/:user_id",
-        "operationId": "patch_api_v1_customers_user_id",
+        "operationId": "patch_api_v1_customers_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -931,7 +931,7 @@
         ],
         "summary": "PUT /clientes/:user_id",
         "description": "PUT /clientes/:user_id",
-        "operationId": "put_api_v1_customers_user_id",
+        "operationId": "put_api_v1_customers_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -963,7 +963,7 @@
         ],
         "summary": "GET /api/v1/flows/data/{id}",
         "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_data_id",
+        "operationId": "get_api_v1_flows_data_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1027,7 +1027,7 @@
         ],
         "summary": "GET /api/v1/flows/sessions/{user_id}",
         "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_sessions_user_id",
+        "operationId": "get_api_v1_flows_sessions_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1041,7 +1041,7 @@
         ],
         "summary": "POST /api/v1/flows/sessions/{user_id}",
         "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "post_api_v1_flows_sessions_user_id",
+        "operationId": "post_api_v1_flows_sessions_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1057,7 +1057,7 @@
         ],
         "summary": "===================== STATUS / CONTAGEM =====================",
         "description": "===================== STATUS / CONTAGEM =====================\nGET /api/v1/messages/check-24h/:user_id",
-        "operationId": "get_api_v1_messages_check-24h_user_id",
+        "operationId": "get_api_v1_messages_check_24h_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1073,7 +1073,7 @@
         ],
         "summary": "GET /api/v1/messages/read-status",
         "description": "GET /api/v1/messages/read-status",
-        "operationId": "get_api_v1_messages_read-status",
+        "operationId": "get_api_v1_messages_read_status",
         "parameters": [],
         "responses": {
           "200": {
@@ -1089,7 +1089,7 @@
         ],
         "summary": "PUT /api/v1/messages/read-status/:user_id",
         "description": "PUT /api/v1/messages/read-status/:user_id",
-        "operationId": "put_api_v1_messages_read-status_user_id",
+        "operationId": "put_api_v1_messages_read_status_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1137,7 +1137,7 @@
         ],
         "summary": "GET /api/v1/messages/unread-counts",
         "description": "GET /api/v1/messages/unread-counts",
-        "operationId": "get_api_v1_messages_unread-counts",
+        "operationId": "get_api_v1_messages_unread_counts",
         "parameters": [],
         "responses": {
           "200": {
@@ -1153,7 +1153,7 @@
         ],
         "summary": "===================== LISTAGEM =====================",
         "description": "===================== LISTAGEM =====================\nGET /api/v1/messages/:user_id",
-        "operationId": "get_api_v1_messages_user_id",
+        "operationId": "get_api_v1_messages_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1169,7 +1169,7 @@
         ],
         "summary": "GET /queues/:queue/hours",
         "description": "GET /queues/:queue/hours",
-        "operationId": "get_api_v1_queue-hours_queue_hours",
+        "operationId": "get_api_v1_queue_hours_queue_hours",
         "parameters": [],
         "responses": {
           "200": {
@@ -1183,7 +1183,7 @@
         ],
         "summary": "POST /queues/:queue/hours  (upsert)",
         "description": "POST /queues/:queue/hours  (upsert)",
-        "operationId": "post_api_v1_queue-hours_queue_hours",
+        "operationId": "post_api_v1_queue_hours_queue_hours",
         "parameters": [],
         "responses": {
           "200": {
@@ -1197,7 +1197,7 @@
         ],
         "summary": "PUT /queues/:queue/hours  (upsert — aceita weekly **ou** windows)",
         "description": "PUT /queues/:queue/hours  (upsert — aceita weekly **ou** windows)",
-        "operationId": "put_api_v1_queue-hours_queue_hours",
+        "operationId": "put_api_v1_queue_hours_queue_hours",
         "parameters": [],
         "responses": {
           "200": {
@@ -1213,7 +1213,7 @@
         ],
         "summary": "POST /queues/:queue/hours/test",
         "description": "POST /queues/:queue/hours/test",
-        "operationId": "post_api_v1_queue-hours_queue_hours_test",
+        "operationId": "post_api_v1_queue_hours_queue_hours_test",
         "parameters": [],
         "responses": {
           "200": {
@@ -1259,7 +1259,7 @@
         ],
         "summary": "👥 Atendentes online da fila",
         "description": "👥 Atendentes online da fila",
-        "operationId": "get_api_v1_queues_agents_queue_name",
+        "operationId": "get_api_v1_queues_agents_queue_name_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1275,7 +1275,7 @@
         ],
         "summary": "🔄 Definir permissão de transferência",
         "description": "🔄 Definir permissão de transferência",
-        "operationId": "post_api_v1_queues_queues-permission",
+        "operationId": "post_api_v1_queues_queues_permission",
         "parameters": [],
         "responses": {
           "200": {
@@ -1291,7 +1291,7 @@
         ],
         "summary": "👀 Obter filas que o usuário pode transferir",
         "description": "👀 Obter filas que o usuário pode transferir",
-        "operationId": "get_api_v1_queues_queues-permission_email",
+        "operationId": "get_api_v1_queues_queues_permission_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1307,7 +1307,7 @@
         ],
         "summary": "📄 Listar todas as respostas rápidas",
         "description": "📄 Listar todas as respostas rápidas",
-        "operationId": "get_api_v1_quick-replies",
+        "operationId": "get_api_v1_quick_replies",
         "parameters": [],
         "responses": {
           "200": {
@@ -1319,9 +1319,9 @@
         "tags": [
           "quick-replies"
         ],
-        "summary": "routes/quickReplies.js",
+        "summary": "Create Quick Reply",
         "description": "routes/quickReplies.js\n➕ Criar nova resposta rápida",
-        "operationId": "post_api_v1_quick-replies",
+        "operationId": "post_api_v1_quick_replies",
         "parameters": [],
         "responses": {
           "200": {
@@ -1337,7 +1337,7 @@
         ],
         "summary": "🗑️ Remover uma resposta rápida",
         "description": "🗑️ Remover uma resposta rápida",
-        "operationId": "delete_api_v1_quick-replies_id",
+        "operationId": "delete_api_v1_quick_replies_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1427,25 +1427,9 @@
         "tags": [
           "storage"
         ],
-        "summary": "routes/uploadPresignedRoutes.js",
+        "summary": "List Presigned Url",
         "description": "routes/uploadPresignedRoutes.js",
-        "operationId": "get_api_v1_storage_presigned-url",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/telegram/connect": {
-      "post": {
-        "tags": [
-          "telegram"
-        ],
-        "summary": "routes/telegram.js",
-        "description": "routes/telegram.js",
-        "operationId": "post_api_v1_telegram_connect",
+        "operationId": "get_api_v1_storage_presigned_url",
         "parameters": [],
         "responses": {
           "200": {
@@ -1523,7 +1507,7 @@
         ],
         "summary": "POST /sync-all -> importa/atualiza todos (serializa JSONs; sem ON CONFLICT duro)",
         "description": "POST /sync-all -> importa/atualiza todos (serializa JSONs; sem ON CONFLICT duro)",
-        "operationId": "post_api_v1_templates_sync-all",
+        "operationId": "post_api_v1_templates_sync_all",
         "parameters": [],
         "responses": {
           "200": {
@@ -1539,7 +1523,7 @@
         ],
         "summary": "DELETE /:id -> remove local",
         "description": "DELETE /:id -> remove local",
-        "operationId": "delete_api_v1_templates_id",
+        "operationId": "delete_api_v1_templates_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1603,7 +1587,7 @@
         ],
         "summary": "GET /api/v1/tickets/history/{id}",
         "description": "Rota detectada em `ninebasic-main/routes/tickets.js`.",
-        "operationId": "get_api_v1_tickets_history_id",
+        "operationId": "get_api_v1_tickets_history_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1635,7 +1619,7 @@
         ],
         "summary": "GET /tickets/last/:user_id → retorna o ticket mais recente do usuário",
         "description": "GET /tickets/last/:user_id → retorna o ticket mais recente do usuário",
-        "operationId": "get_api_v1_tickets_last_user_id",
+        "operationId": "get_api_v1_tickets_last_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1667,7 +1651,7 @@
         ],
         "summary": "GET /tickets/user/:user_id → tickets fechados do usuário",
         "description": "GET /tickets/user/:user_id → tickets fechados do usuário",
-        "operationId": "get_api_v1_tickets_user_user_id",
+        "operationId": "get_api_v1_tickets_user_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1683,7 +1667,7 @@
         ],
         "summary": "GET /tickets/:user_id → Consulta ticket aberto por user_id",
         "description": "GET /tickets/:user_id → Consulta ticket aberto por user_id",
-        "operationId": "get_api_v1_tickets_user_id",
+        "operationId": "get_api_v1_tickets_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1697,7 +1681,7 @@
         ],
         "summary": "PUT /tickets/:user_id → fechar último ticket aberto do user_id e publicar evento",
         "description": "PUT /tickets/:user_id → fechar último ticket aberto do user_id e publicar evento",
-        "operationId": "put_api_v1_tickets_user_id",
+        "operationId": "put_api_v1_tickets_user_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1743,7 +1727,7 @@
         ],
         "summary": "Buscar por email",
         "description": "Buscar por email",
-        "operationId": "get_api_v1_users_email",
+        "operationId": "get_api_v1_users_email_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1759,21 +1743,7 @@
         ],
         "summary": "Excluir (tenant) + chamada externa para remover em public.users",
         "description": "Excluir (tenant) + chamada externa para remover em public.users",
-        "operationId": "delete_api_v1_users_id",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Atualizar (sincroniza public.users: apenas profile)",
-        "description": "Atualizar (sincroniza public.users: apenas profile)",
-        "operationId": "put_api_v1_users_id",
+        "operationId": "delete_api_v1_users_id_",
         "parameters": [],
         "responses": {
           "200": {
@@ -1803,9 +1773,9 @@
         "tags": [
           "whatsapp"
         ],
-        "summary": "routes/waEmbedded.js (trecho)",
+        "summary": "Create Pick Number",
         "description": "routes/waEmbedded.js (trecho)",
-        "operationId": "post_api_v1_whatsapp_embedded_es_pick-number",
+        "operationId": "post_api_v1_whatsapp_embedded_es_pick_number",
         "parameters": [],
         "responses": {
           "200": {
@@ -1837,53 +1807,7 @@
         ],
         "summary": "POST /wa/profile/photo-from-url -> upload + aplicar foto",
         "description": "POST /wa/profile/photo-from-url -> upload + aplicar foto\nbody: { file_url: string, type?: 'image/jpeg'|'image/png' }",
-        "operationId": "post_api_v1_whatsapp_photo-from-url",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/profile": {
-      "get": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "---------- ENDPOINTS ----------",
-        "description": "---------- ENDPOINTS ----------\nGET /wa/profile -> phone + business profile",
-        "operationId": "get_api_v1_whatsapp_profile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "POST /wa/profile -> update about/address/description/email/vertical/websites",
-        "description": "POST /wa/profile -> update about/address/description/email/vertical/websites",
-        "operationId": "post_api_v1_whatsapp_profile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/profile/photo": {
-      "delete": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "DELETE /wa/profile/photo -> remove foto",
-        "description": "DELETE /wa/profile/photo -> remove foto",
-        "operationId": "delete_api_v1_whatsapp_profile_photo",
+        "operationId": "post_api_v1_whatsapp_photo_from_url",
         "parameters": [],
         "responses": {
           "200": {
@@ -1911,64 +1835,84 @@
   },
   "tags": [
     {
-      "name": "agents"
+      "name": "agents",
+      "x-displayName": "Agents"
     },
     {
-      "name": "analytics"
+      "name": "analytics",
+      "x-displayName": "Analytics"
     },
     {
-      "name": "billing"
+      "name": "billing",
+      "x-displayName": "Billing"
     },
     {
-      "name": "breaks"
+      "name": "breaks",
+      "x-displayName": "Breaks"
     },
     {
-      "name": "campaigns"
+      "name": "campaigns",
+      "x-displayName": "Campaigns"
     },
     {
-      "name": "conversations"
+      "name": "conversations",
+      "x-displayName": "Conversations"
     },
     {
-      "name": "customers"
+      "name": "customers",
+      "x-displayName": "Customers"
     },
     {
-      "name": "flows"
+      "name": "flows",
+      "x-displayName": "Flows"
     },
     {
-      "name": "messages"
+      "name": "messages",
+      "x-displayName": "Messages"
     },
     {
-      "name": "queue-hours"
+      "name": "queue-hours",
+      "x-displayName": "Queue Hours"
     },
     {
-      "name": "queues"
+      "name": "queues",
+      "x-displayName": "Queues"
     },
     {
-      "name": "quick-replies"
+      "name": "quick-replies",
+      "x-displayName": "Quick Replies"
     },
     {
-      "name": "security"
+      "name": "security",
+      "x-displayName": "Security"
     },
     {
-      "name": "settings"
+      "name": "settings",
+      "x-displayName": "Settings"
     },
     {
-      "name": "storage"
+      "name": "storage",
+      "x-displayName": "Storage"
     },
     {
-      "name": "telegram"
+      "name": "telegram",
+      "x-displayName": "Telegram"
     },
     {
-      "name": "templates"
+      "name": "templates",
+      "x-displayName": "Templates"
     },
     {
-      "name": "tickets"
+      "name": "tickets",
+      "x-displayName": "Tickets"
     },
     {
-      "name": "users"
+      "name": "users",
+      "x-displayName": "Users"
     },
     {
-      "name": "whatsapp"
+      "name": "whatsapp",
+      "x-displayName": "Whatsapp"
     }
   ]
 }

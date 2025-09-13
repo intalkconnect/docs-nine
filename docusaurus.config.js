@@ -7,18 +7,16 @@ const config = {
   tagline: 'API Documentation for Nine Chat',
   favicon: 'img/favicon.ico',
   future: { v4: true },
-
   url: 'https://docs.ninechat.com.br',
   baseUrl: '/',
-
   organizationName: 'Nine Chat',
   projectName: 'ninedocs',
-
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
-
-  i18n: { defaultLocale: 'en', locales: ['en'] },
-
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
+  },
   presets: [
     [
       'classic',
@@ -26,9 +24,7 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          docItemComponent: '@theme/ApiItem',
-          routeBasePath: '/',              // 🔧 monta a seção "Docs" na RAIZ
-          // editUrl: null,                // (opcional) remova se não usa "edit this page"
+          docItemComponent: '@theme/ApiItem', // Usar componente API
         },
         blog: {
           showReadingTime: true,
@@ -38,31 +34,29 @@ const config = {
           onUntruncatedBlogPosts: 'warn',
         },
         theme: { customCss: './src/css/custom.css' },
-        pages: false,                      // ok manter desativado para não conflitar com a raiz
+        pages: false, // Remove página inicial padrão
       }),
     ],
   ],
-
-  // Geração de páginas a partir do OpenAPI (MDX em docs/api/*)
   plugins: [
     [
       'docusaurus-plugin-openapi-docs',
       {
-        id: 'api',
-        docsPluginId: 'classic',
+        id: 'api', // plugin id
+        docsPluginId: 'classic', // configured for preset-classic
         config: {
           ninechat: {
-            specPath: 'static/openapi.json', // mantém seu arquivo aqui
-            outputDir: 'docs/api',           // páginas serão geradas em /api/*
-            sidebarOptions: { groupPathsBy: 'tag' },
+            specPath: 'static/openapi.json',
+            outputDir: 'docs/api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+            },
           },
         },
       },
     ],
   ],
-
-  themes: ['docusaurus-theme-openapi-docs'],
-
+  themes: ['docusaurus-theme-openapi-docs'], // Tema específico para OpenAPI
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -71,11 +65,18 @@ const config = {
         title: 'Docs Ninechat',
         logo: { alt: 'Ninechat Logo', src: 'img/logo.svg' },
         items: [
-          // 🔧 use o sidebar GERADO para a API; o id padrão que vamos expor
-          // no sidebars.js será "apiSidebar"
-          { type: 'docSidebar', sidebarId: 'apiSidebar', position: 'left', label: 'API' },
+          {
+            type: 'docSidebar',
+            sidebarId: 'tutorialSidebar',
+            position: 'left',
+            label: 'API',
+          },
           { to: '/blog', label: 'Blog', position: 'left' },
-          { href: 'https://ninechat.com.br', label: 'Website', position: 'right' },
+          {
+            href: 'https://ninechat.com.br',
+            label: 'Website',
+            position: 'right',
+          },
         ],
       },
       footer: {
@@ -84,8 +85,8 @@ const config = {
           {
             title: 'Documentação',
             items: [
-              { label: 'API Reference', to: '/api' }, // 🔧 era /docs/api
-              // { label: 'Guias', to: '/docs/intro' }, // 🔧 remova se não existe "intro"
+              { label: 'API Reference', to: '/docs/api' },
+              { label: 'Guias', to: '/docs/intro' },
             ],
           },
           {
@@ -105,7 +106,10 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} NineChat. Todos os direitos reservados.`,
       },
-      prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
+      prism: {
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+      },
     }),
 };
 

@@ -3,1916 +3,2105 @@
   "info": {
     "title": "NineChat API",
     "version": "1.0.0",
-    "description": "API oficial da NineChat. Autenticação via Bearer Token no header `Authorization: Bearer <token>`.\n\nEsta especificação foi sanitizada para organização das rotas, remoção de endpoints auxiliares (`connect`, `profile`) e padronização de nomes."
+    "description": "# Overview\n\nBem-vindo à **NineChat API**. Esta especificação foi gerada a partir dos arquivos de rotas fornecidos (agents, tickets, messages, customers, conversations, campaigns e analytics).\n\n- **Autenticação:** Bearer Token (JWT). Inclua o header `Authorization: Bearer {token}` em todas as requisições.\n- **Padrões de nomenclatura:** tags no plural; resumos *List/Get/Create/Update/Delete*.\n- **Erros:** respostas 4xx/5xx retornam um objeto `{ \"error\": \"mensagem\" }` quando aplicável.\n\n## Autenticação\nUse o esquema `bearerAuth` abaixo. Exemplo de cabeçalho HTTP:\n```http\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...\n```"
   },
   "servers": [
     {
-      "url": "http://{id}.ninechat.com.br",
-      "description": "Dev"
+      "url": "https://api.ninechat.com.br/api/v1",
+      "description": "Produção"
+    },
+    {
+      "url": "https://sandbox.api.ninechat.com.br/api/v1",
+      "description": "Sandbox"
     }
   ],
-  "paths": {
-    "/api/v1/agents": {
-      "get": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "List Agents",
-        "description": "routes/atendentes.js\n------------ Rotas principais ------------\n🔄 Listar todos os atendentes",
-        "operationId": "get_api_v1_agents",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Instruções para usar o header `Authorization: Bearer <token>`."
+    },
+    {
+      "name": "Messages",
+      "description": "Envio de mensagens e consultas relacionadas."
+    },
+    {
+      "name": "Customers",
+      "description": "Clientes (listagem, CRUD e busca)."
+    },
+    {
+      "name": "Conversations",
+      "description": "Conversas/filas para atendimento."
+    },
+    {
+      "name": "Campaigns",
+      "description": "Criação e acompanhamento de campanhas."
+    },
+    {
+      "name": "Tickets",
+      "description": "Tickets (histórico, PDF, fechamento e transferência)."
+    },
+    {
+      "name": "Agents",
+      "description": "Atendentes (status, sessões, pausas e presença)."
+    },
+    {
+      "name": "Analytics",
+      "description": "Painéis e métricas em tempo real."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
-    "/api/v1/agents/breaks/{email}": {
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "⏸️ Pausar atendimento",
-        "description": "⏸️ Pausar atendimento",
-        "operationId": "put_api_v1_agents_breaks_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/heartbeat": {
-      "post": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "POST /api/v1/agents/heartbeat",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "post_api_v1_agents_heartbeat",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "PUT /api/v1/agents/heartbeat",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "put_api_v1_agents_heartbeat",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/presence/{email}": {
-      "post": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "POST /api/v1/agents/presence/{email}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "post_api_v1_agents_presence_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Descrição do erro"
           }
         }
       },
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "PUT /api/v1/agents/presence/{email}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "put_api_v1_agents_presence_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/resume/{email}": {
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "▶️ Retomar da pausa",
-        "description": "▶️ Retomar da pausa",
-        "operationId": "put_api_v1_agents_resume_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/session/{email}": {
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "🔐 Abrir/atualizar sessão",
-        "description": "🔐 Abrir/atualizar sessão",
-        "operationId": "put_api_v1_agents_session_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/status/{email}": {
-      "get": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "GET /api/v1/agents/status/{email}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "get_api_v1_agents_status_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/status/{session}": {
-      "patch": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "PATCH /api/v1/agents/status/{session}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "patch_api_v1_agents_status_session_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "incoming",
+              "outgoing",
+              "system"
+            ]
+          },
+          "type": {
+            "type": "string"
+          },
+          "content": {},
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
           }
         }
       },
-      "post": {
-        "tags": [
-          "agents"
+      "MessageSendPayload": {
+        "type": "object",
+        "required": [
+          "to",
+          "type"
         ],
-        "summary": "POST /api/v1/agents/status/{session}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "post_api_v1_agents_status_session_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "MSISDN E.164. Ex: 5511999999999"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "image",
+              "video",
+              "audio",
+              "document",
+              "sticker",
+              "location",
+              "contacts"
+            ]
+          },
+          "content": {
+            "type": "object",
+            "description": "Conteúdo conforme `type`. Para `text`, use `{ body }`; para mídia, use `{ url, filename?, caption? }`."
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "message_id": {
+                "type": "string",
+                "description": "Para reply/quote"
+              }
+            }
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "whatsapp",
+              "telegram"
+            ],
+            "default": "whatsapp"
           }
         }
       },
-      "put": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "PUT /api/v1/agents/status/{session}",
-        "description": "Rota detectada em `ninebasic-main/routes/agents.js`.",
-        "operationId": "put_api_v1_agents_status_session_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/{email}": {
-      "get": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "🔍 Buscar atendente por email",
-        "description": "🔍 Buscar atendente por email",
-        "operationId": "get_api_v1_agents_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/agents/{id}": {
-      "delete": {
-        "tags": [
-          "agents"
-        ],
-        "summary": "🗑️ Excluir atendente",
-        "description": "🗑️ Excluir atendente",
-        "operationId": "delete_api_v1_agents_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/agents/realtime": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==========================",
-        "description": "* ==========================\n *  Realtime - Somente agentes\n * ==========================\n * GET /analytics/agents/realtime\n * Retorna todos os atendentes (online, pause, offline, inativo),\n * com motivo/duração da pausa e # de tickets abertos por agente.",
-        "operationId": "get_api_v1_analytics_agents_realtime",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/abandonment": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - Abandono (sem 1ª resposta até threshold)\n   * ==================================\n   * GET /analytics/metrics/abandonment?from&to&fila&canal&threshold_min=15",
-        "operationId": "get_api_v1_analytics_metrics_abandonment",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/agents/art": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - ART por agente\n   * ==================================\n   * GET /analytics/metrics/agents/art?from&to&fila&canal&agent",
-        "operationId": "get_api_v1_analytics_metrics_agents_art",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/aging-by-queue": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - Aging do backlog (snapshot atual)\n   * ==================================\n   * GET /analytics/metrics/aging-by-queue",
-        "operationId": "get_api_v1_analytics_metrics_aging_by_queue",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/duration-by-queue": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - Duração por fila\n   * ==================================\n   * GET /analytics/metrics/duration-by-queue?from&to&fila&canal",
-        "operationId": "get_api_v1_analytics_metrics_duration_by_queue",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/feedback": {
-      "post": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "POST /metrics/feedback  -> salva NPS/CSAT",
-        "description": "POST /metrics/feedback  -> salva NPS/CSAT",
-        "operationId": "post_api_v1_analytics_metrics_feedback",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/feedback/responses": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "GET /api/v1/analytics/metrics/feedback/responses",
-        "description": "Rota detectada em `ninebasic-main/routes/analytics.js`.",
-        "operationId": "get_api_v1_analytics_metrics_feedback_responses",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/frt": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - FRT (First Response Time)\n   * ==================================\n   * GET /analytics/metrics/frt?group=channel|fila|day&from&to&fila&canal&agent",
-        "operationId": "get_api_v1_analytics_metrics_frt",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/new-clients": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "GET /analytics/metrics/new-clients?group=day&from&to",
-        "description": "GET /analytics/metrics/new-clients?group=day&from&to",
-        "operationId": "get_api_v1_analytics_metrics_new_clients",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/queues": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==================================",
-        "description": "* ==================================\n   *  Métricas - Por fila (snapshot ou período)\n   * ==================================\n   * GET /analytics/metrics/queues?from&to",
-        "operationId": "get_api_v1_analytics_metrics_queues",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/series/csat": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "GET /metrics/series/csat -> série temporal para gráficos (com distribuição e gauge)",
-        "description": "GET /metrics/series/csat -> série temporal para gráficos (com distribuição e gauge)",
-        "operationId": "get_api_v1_analytics_metrics_series_csat",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/series/nps": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "GET /metrics/series/nps  -> série temporal para gráficos (com NPS e distribuição)",
-        "description": "GET /metrics/series/nps  -> série temporal para gráficos (com NPS e distribuição)",
-        "operationId": "get_api_v1_analytics_metrics_series_nps",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/metrics/summary": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "GET /api/v1/analytics/metrics/summary",
-        "description": "Rota detectada em `ninebasic-main/routes/analytics.js`.",
-        "operationId": "get_api_v1_analytics_metrics_summary",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/analytics/realtime": {
-      "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "* ==========================",
-        "description": "* ==========================\n   *  Realtime (estado atual)\n   * ==========================\n   * GET /analytics/realtime\n   * (id, cliente, canal, agente, tempoEspera[min], status, prioridade, fila, posicaoFila, inicioConversa)",
-        "operationId": "get_api_v1_analytics_realtime",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/billing/pricing": {
-      "get": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "========== PRICING (public.billing_pricing) ==========",
-        "description": "========== PRICING (public.billing_pricing) ==========\nListar preços",
-        "operationId": "get_api_v1_billing_pricing",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "UPSERT de preço (por channel)",
-        "description": "UPSERT de preço (por channel)",
-        "operationId": "post_api_v1_billing_pricing",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/billing/pricing/{channel}": {
-      "delete": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "DELETE preço",
-        "description": "DELETE preço",
-        "operationId": "delete_api_v1_billing_pricing_channel_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "Buscar preço de um canal",
-        "description": "Buscar preço de um canal",
-        "operationId": "get_api_v1_billing_pricing_channel_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "PATCH preço",
-        "description": "PATCH preço",
-        "operationId": "patch_api_v1_billing_pricing_channel_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "PUT preço",
-        "description": "PUT preço",
-        "operationId": "put_api_v1_billing_pricing_channel_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/billing/statement": {
-      "get": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "========== EXTRATO AGREGADO (Geral por user_id+channel) ==========",
-        "description": "========== EXTRATO AGREGADO (Geral por user_id+channel) ==========\nGET /billing/statement?from=...&to=...&mode=start&channel=...",
-        "operationId": "get_api_v1_billing_statement",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/billing/statement/daily": {
-      "get": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "========== EXTRATO DIÁRIO (Geral por dia+canal) ==========",
-        "description": "========== EXTRATO DIÁRIO (Geral por dia+canal) ==========\nGET /billing/statement/daily?from=...&to=...&mode=start|activity&channel=...",
-        "operationId": "get_api_v1_billing_statement_daily",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/billing/statement/detail": {
-      "get": {
-        "tags": [
-          "billing"
-        ],
-        "summary": "========== DETALHE (lista cada sessão com preço) ==========",
-        "description": "========== DETALHE (lista cada sessão com preço) ==========\nGET /billing/statement/detail?from=...&to=...&mode=start&channel=...&limit=100&offset=0",
-        "operationId": "get_api_v1_billing_statement_detail",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks": {
-      "get": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "List Breaks",
-        "description": "routes/pausas.js\n========== CRUD: MOTIVOS (pause_reasons) ==========\nListar motivos (opcional ?active=true|false)",
-        "operationId": "get_api_v1_breaks",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Criar motivo",
-        "description": "Criar motivo",
-        "operationId": "post_api_v1_breaks",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/agents/{email}/current": {
-      "get": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "========== SESSÕES DE PAUSA DO ATENDENTE ==========",
-        "description": "========== SESSÕES DE PAUSA DO ATENDENTE ==========\nSessão ativa do atendente",
-        "operationId": "get_api_v1_breaks_agents_email_current",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/agents/{email}/history": {
-      "get": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Histórico do atendente",
-        "description": "Histórico do atendente",
-        "operationId": "get_api_v1_breaks_agents_email_history",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/agents/{email}/start": {
-      "post": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Iniciar pausa",
-        "description": "Iniciar pausa",
-        "operationId": "post_api_v1_breaks_agents_email_start",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/agents/{email}/{id}/end": {
-      "patch": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Encerrar pausa",
-        "description": "Encerrar pausa",
-        "operationId": "patch_api_v1_breaks_agents_email_id_end",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/{id}": {
-      "delete": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Remover motivo (só se não houver sessões vinculadas)",
-        "description": "Remover motivo (só se não houver sessões vinculadas)",
-        "operationId": "delete_api_v1_breaks_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Buscar um motivo",
-        "description": "Buscar um motivo",
-        "operationId": "get_api_v1_breaks_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Atualizar motivo (PATCH)",
-        "description": "Atualizar motivo (PATCH)",
-        "operationId": "patch_api_v1_breaks_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Atualizar motivo (PUT)",
-        "description": "Atualizar motivo (PUT)",
-        "operationId": "put_api_v1_breaks_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/breaks/{id}/toggle": {
-      "patch": {
-        "tags": [
-          "breaks"
-        ],
-        "summary": "Alternar ativo/inativo",
-        "description": "Alternar ativo/inativo",
-        "operationId": "patch_api_v1_breaks_id_toggle",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/campaigns": {
-      "get": {
-        "tags": [
-          "campaigns"
-        ],
-        "summary": "Retorna também agregados de campaign_items para progresso.",
-        "description": "Retorna também agregados de campaign_items para progresso.\n=============================================================================\nGET /api/v1/campaigns?tab=(all|active|finished|failed)&q=texto",
-        "operationId": "get_api_v1_campaigns",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "campaigns"
-        ],
-        "summary": "status inicial: 'queued' (imediata) ou 'scheduled' (agendada)",
-        "description": "status inicial: 'queued' (imediata) ou 'scheduled' (agendada)\nquem dispara o envio é o scheduler (DB) já existente\n=============================================================================",
-        "operationId": "post_api_v1_campaigns",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/campaigns/{id}": {
-      "get": {
-        "tags": [
-          "campaigns"
-        ],
-        "summary": "=============================================================================",
-        "description": "=============================================================================\nGET /api/v1/campaigns/:id  → detalhes + agregados\n=============================================================================",
-        "operationId": "get_api_v1_campaigns_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/campaigns/{id}/items": {
-      "get": {
-        "tags": [
-          "campaigns"
-        ],
-        "summary": "Para inspecionar itens; deixe comentado se não precisar agora.",
-        "description": "Para inspecionar itens; deixe comentado se não precisar agora.\n-----------------------------------------------------------------------------",
-        "operationId": "get_api_v1_campaigns_id_items",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/conversations": {
-      "get": {
-        "tags": [
-          "conversations"
-        ],
-        "summary": "List Conversations",
-        "description": "routes/chatsRoutes.js",
-        "operationId": "get_api_v1_conversations",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/conversations/queues": {
-      "get": {
-        "tags": [
-          "conversations"
-        ],
-        "summary": "GET /api/v1/conversations/queues",
-        "description": "Rota detectada em `ninebasic-main/routes/conversations.js`.",
-        "operationId": "get_api_v1_conversations_queues",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/conversations/queues/next": {
-      "put": {
-        "tags": [
-          "conversations"
-        ],
-        "summary": "PUT /api/v1/conversations/queues/next",
-        "description": "Rota detectada em `ninebasic-main/routes/conversations.js`.",
-        "operationId": "put_api_v1_conversations_queues_next",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/customers": {
-      "get": {
-        "tags": [
-          "customers"
-        ],
-        "summary": "GET /clientes?page=&page_size=&q=",
-        "description": "GET /clientes?page=&page_size=&q=",
-        "operationId": "get_api_v1_customers",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/customers/{user_id}": {
-      "delete": {
-        "tags": [
-          "customers"
-        ],
-        "summary": "DELETE /clientes/:user_id",
-        "description": "DELETE /clientes/:user_id",
-        "operationId": "delete_api_v1_customers_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "customers"
-        ],
-        "summary": "GET /clientes/:user_id",
-        "description": "GET /clientes/:user_id",
-        "operationId": "get_api_v1_customers_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "customers"
-        ],
-        "summary": "PATCH /clientes/:user_id",
-        "description": "PATCH /clientes/:user_id",
-        "operationId": "patch_api_v1_customers_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "customers"
-        ],
-        "summary": "PUT /clientes/:user_id",
-        "description": "PUT /clientes/:user_id",
-        "operationId": "put_api_v1_customers_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/activate": {
-      "post": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "POST /api/v1/flows/activate",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "post_api_v1_flows_activate",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/data/{id}": {
-      "get": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "GET /api/v1/flows/data/{id}",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_data_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/history": {
-      "get": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "GET /api/v1/flows/history",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_history",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/latest": {
-      "get": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "GET /api/v1/flows/latest",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_latest",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/publish": {
-      "post": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "POST /api/v1/flows/publish",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "post_api_v1_flows_publish",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/flows/sessions/{user_id}": {
-      "get": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "GET /api/v1/flows/sessions/{user_id}",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "get_api_v1_flows_sessions_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "flows"
-        ],
-        "summary": "POST /api/v1/flows/sessions/{user_id}",
-        "description": "Rota detectada em `ninebasic-main/routes/flows.js`.",
-        "operationId": "post_api_v1_flows_sessions_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/check-24h/{user_id}": {
-      "get": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "===================== STATUS / CONTAGEM =====================",
-        "description": "===================== STATUS / CONTAGEM =====================\nGET /api/v1/messages/check-24h/:user_id",
-        "operationId": "get_api_v1_messages_check_24h_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/read-status": {
-      "get": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "GET /api/v1/messages/read-status",
-        "description": "GET /api/v1/messages/read-status",
-        "operationId": "get_api_v1_messages_read_status",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/read-status/{user_id}": {
-      "put": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "PUT /api/v1/messages/read-status/:user_id",
-        "description": "PUT /api/v1/messages/read-status/:user_id",
-        "operationId": "put_api_v1_messages_read_status_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/send": {
-      "post": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "===================== ENVIO =====================",
-        "description": "===================== ENVIO =====================\nPOST /api/v1/messages/send",
-        "operationId": "post_api_v1_messages_send",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/send/template": {
-      "post": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "POST /api/v1/messages/send/template",
-        "description": "POST /api/v1/messages/send/template",
-        "operationId": "post_api_v1_messages_send_template",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/unread-counts": {
-      "get": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "GET /api/v1/messages/unread-counts",
-        "description": "GET /api/v1/messages/unread-counts",
-        "operationId": "get_api_v1_messages_unread_counts",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/messages/{user_id}": {
-      "get": {
-        "tags": [
-          "messages"
-        ],
-        "summary": "===================== LISTAGEM =====================",
-        "description": "===================== LISTAGEM =====================\nGET /api/v1/messages/:user_id",
-        "operationId": "get_api_v1_messages_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queue-hours/{queue}/hours": {
-      "get": {
-        "tags": [
-          "queue-hours"
-        ],
-        "summary": "GET /queues/:queue/hours",
-        "description": "GET /queues/:queue/hours",
-        "operationId": "get_api_v1_queue_hours_queue_hours",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "queue-hours"
-        ],
-        "summary": "POST /queues/:queue/hours  (upsert)",
-        "description": "POST /queues/:queue/hours  (upsert)",
-        "operationId": "post_api_v1_queue_hours_queue_hours",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "queue-hours"
-        ],
-        "summary": "PUT /queues/:queue/hours  (upsert — aceita weekly **ou** windows)",
-        "description": "PUT /queues/:queue/hours  (upsert — aceita weekly **ou** windows)",
-        "operationId": "put_api_v1_queue_hours_queue_hours",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queue-hours/{queue}/hours/test": {
-      "post": {
-        "tags": [
-          "queue-hours"
-        ],
-        "summary": "POST /queues/:queue/hours/test",
-        "description": "POST /queues/:queue/hours/test",
-        "operationId": "post_api_v1_queue_hours_queue_hours_test",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queues": {
-      "get": {
-        "tags": [
-          "queues"
-        ],
-        "summary": "📥 Listar filas",
-        "description": "📥 Listar filas",
-        "operationId": "get_api_v1_queues",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "queues"
-        ],
-        "summary": "➕ Criar nova fila (ativa sempre TRUE; descricao/color opcionais)",
-        "description": "➕ Criar nova fila (ativa sempre TRUE; descricao/color opcionais)",
-        "operationId": "post_api_v1_queues",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queues/agents/{queue_name}": {
-      "get": {
-        "tags": [
-          "queues"
-        ],
-        "summary": "👥 Atendentes online da fila",
-        "description": "👥 Atendentes online da fila",
-        "operationId": "get_api_v1_queues_agents_queue_name_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queues/queues-permission": {
-      "post": {
-        "tags": [
-          "queues"
-        ],
-        "summary": "🔄 Definir permissão de transferência",
-        "description": "🔄 Definir permissão de transferência",
-        "operationId": "post_api_v1_queues_queues_permission",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/queues/queues-permission/{email}": {
-      "get": {
-        "tags": [
-          "queues"
-        ],
-        "summary": "👀 Obter filas que o usuário pode transferir",
-        "description": "👀 Obter filas que o usuário pode transferir",
-        "operationId": "get_api_v1_queues_queues_permission_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/quick-replies": {
-      "get": {
-        "tags": [
-          "quick-replies"
-        ],
-        "summary": "📄 Listar todas as respostas rápidas",
-        "description": "📄 Listar todas as respostas rápidas",
-        "operationId": "get_api_v1_quick_replies",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "quick-replies"
-        ],
-        "summary": "Create Quick Reply",
-        "description": "routes/quickReplies.js\n➕ Criar nova resposta rápida",
-        "operationId": "post_api_v1_quick_replies",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/quick-replies/{id}": {
-      "delete": {
-        "tags": [
-          "quick-replies"
-        ],
-        "summary": "🗑️ Remover uma resposta rápida",
-        "description": "🗑️ Remover uma resposta rápida",
-        "operationId": "delete_api_v1_quick_replies_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/security/tokens": {
-      "get": {
-        "tags": [
-          "security"
-        ],
-        "summary": "Lista tokens do tenant (mascarados; sem segredo)",
-        "description": "Lista tokens do tenant (mascarados; sem segredo)",
-        "operationId": "get_api_v1_security_tokens",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "security"
-        ],
-        "summary": "POST /security/tokens",
-        "description": "POST /security/tokens",
-        "operationId": "post_api_v1_security_tokens",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/security/tokens/{id}/revoke": {
-      "post": {
-        "tags": [
-          "security"
-        ],
-        "summary": "Revoga (não permite revogar o default)",
-        "description": "Revoga (não permite revogar o default)",
-        "operationId": "post_api_v1_security_tokens_id_revoke",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/settings": {
-      "get": {
-        "tags": [
-          "settings"
-        ],
-        "summary": "Rota GET /settings - Retorna todas as configurações",
-        "description": "Rota GET /settings - Retorna todas as configurações",
-        "operationId": "get_api_v1_settings",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "settings"
-        ],
-        "summary": "Rota POST /settings - Cria ou atualiza uma configuração",
-        "description": "Rota POST /settings - Cria ou atualiza uma configuração",
-        "operationId": "post_api_v1_settings",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/storage/presigned-url": {
-      "get": {
-        "tags": [
-          "storage"
-        ],
-        "summary": "List Presigned Url",
-        "description": "routes/uploadPresignedRoutes.js",
-        "operationId": "get_api_v1_storage_presigned_url",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/telegram/status": {
-      "get": {
-        "tags": [
-          "telegram"
-        ],
-        "summary": "GET /api/v1/telegram/status",
-        "description": "Rota detectada em `ninebasic-main/routes/telegram.js`.",
-        "operationId": "get_api_v1_telegram_status",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates": {
-      "get": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "===== Rotas locais (DB do tenant) =====",
-        "description": "===== Rotas locais (DB do tenant) =====\nGET / -> lista local com filtros opcionais ?status= & ?q=",
-        "operationId": "get_api_v1_templates",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "POST / -> cria rascunho local (serializa JSONs)",
-        "description": "POST / -> cria rascunho local (serializa JSONs)",
-        "operationId": "post_api_v1_templates",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates/provider": {
-      "get": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "GET /provider -> lista direto da Graph (inclui quality_score)",
-        "description": "GET /provider -> lista direto da Graph (inclui quality_score)",
-        "operationId": "get_api_v1_templates_provider",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates/sync-all": {
-      "post": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "POST /sync-all -> importa/atualiza todos (serializa JSONs; sem ON CONFLICT duro)",
-        "description": "POST /sync-all -> importa/atualiza todos (serializa JSONs; sem ON CONFLICT duro)",
-        "operationId": "post_api_v1_templates_sync_all",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates/{id}": {
-      "delete": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "DELETE /:id -> remove local",
-        "description": "DELETE /:id -> remove local",
-        "operationId": "delete_api_v1_templates_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates/{id}/submit": {
-      "post": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "===== Rotas que falam com a Graph =====",
-        "description": "===== Rotas que falam com a Graph =====\nPOST /:id/submit -> submete na Graph",
-        "operationId": "post_api_v1_templates_id_submit",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/templates/{id}/sync": {
-      "post": {
-        "tags": [
-          "templates"
-        ],
-        "summary": "POST /:id/sync -> sincroniza status e quality_score (se houver coluna)",
-        "description": "POST /:id/sync -> sincroniza status e quality_score (se houver coluna)",
-        "operationId": "post_api_v1_templates_id_sync",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/history": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "nada de client.release(); // << NÃO existe nesse client",
-        "description": "nada de client.release(); // << NÃO existe nesse client\nGET /tickets/history → lista de tickets fechados (com busca e período)",
-        "operationId": "get_api_v1_tickets_history",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/history/{id}": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "GET /api/v1/tickets/history/{id}",
-        "description": "Rota detectada em `ninebasic-main/routes/tickets.js`.",
-        "operationId": "get_api_v1_tickets_history_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/history/{id}/pdf": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "Validação simples do formato do user_id",
-        "description": "Validação simples do formato do user_id",
-        "operationId": "get_api_v1_tickets_history_id_pdf",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/last/{user_id}": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "GET /tickets/last/:user_id → retorna o ticket mais recente do usuário",
-        "description": "GET /tickets/last/:user_id → retorna o ticket mais recente do usuário",
-        "operationId": "get_api_v1_tickets_last_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/transferir": {
-      "post": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "POST /tickets/transferir → fecha atual e cria novo em outra fila",
-        "description": "POST /tickets/transferir → fecha atual e cria novo em outra fila\nPOST /tickets/transferir → fecha atual e cria novo em outra fila",
-        "operationId": "post_api_v1_tickets_transferir",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/user/{user_id}": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "GET /tickets/user/:user_id → tickets fechados do usuário",
-        "description": "GET /tickets/user/:user_id → tickets fechados do usuário",
-        "operationId": "get_api_v1_tickets_user_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tickets/{user_id}": {
-      "get": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "GET /tickets/:user_id → Consulta ticket aberto por user_id",
-        "description": "GET /tickets/:user_id → Consulta ticket aberto por user_id",
-        "operationId": "get_api_v1_tickets_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "tickets"
-        ],
-        "summary": "PUT /tickets/:user_id → fechar último ticket aberto do user_id e publicar evento",
-        "description": "PUT /tickets/:user_id → fechar último ticket aberto do user_id e publicar evento",
-        "operationId": "put_api_v1_tickets_user_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/users": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Listar",
-        "description": "Listar",
-        "operationId": "get_api_v1_users",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Criar (tenant + public + invite)",
-        "description": "Criar (tenant + public + invite)",
-        "operationId": "post_api_v1_users",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/users/{email}": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Buscar por email",
-        "description": "Buscar por email",
-        "operationId": "get_api_v1_users_email_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/users/{id}": {
-      "delete": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Excluir (tenant) + chamada externa para remover em public.users",
-        "description": "Excluir (tenant) + chamada externa para remover em public.users",
-        "operationId": "delete_api_v1_users_id_",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/embedded/es/finalize": {
-      "post": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "============ FINALIZE (Embedded Signup) ============",
-        "description": "============ FINALIZE (Embedded Signup) ============\nPOST /api/v1/wa/es/finalize",
-        "operationId": "post_api_v1_whatsapp_embedded_es_finalize",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/embedded/es/pick-number": {
-      "post": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "Create Pick Number",
-        "description": "routes/waEmbedded.js (trecho)",
-        "operationId": "post_api_v1_whatsapp_embedded_es_pick_number",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/number": {
-      "get": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "GET /wa/number -> metadados do número (UI)",
-        "description": "GET /wa/number -> metadados do número (UI)",
-        "operationId": "get_api_v1_whatsapp_number",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/photo-from-url": {
-      "post": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "POST /wa/profile/photo-from-url -> upload + aplicar foto",
-        "description": "POST /wa/profile/photo-from-url -> upload + aplicar foto\nbody: { file_url: string, type?: 'image/jpeg'|'image/png' }",
-        "operationId": "post_api_v1_whatsapp_photo_from_url",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/whatsapp/status": {
-      "get": {
-        "tags": [
-          "whatsapp"
-        ],
-        "summary": "GET /api/v1/whatsapp/status",
-        "description": "Rota detectada em `ninebasic-main/routes/whatsapp.js`.",
-        "operationId": "get_api_v1_whatsapp_status",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
+      "TemplateSendPayload": {
+        "type": "object",
+        "required": [
+          "to",
+          "template"
+        ],
+        "properties": {
+          "to": {
+            "type": "string"
+          },
+          "template": {
+            "type": "object",
+            "required": [
+              "name",
+              "language"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "language": {
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "example": "pt_BR"
+                  }
+                }
+              },
+              "components": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Suporta forma legada com `templateName`, `languageCode` e `components`."
       }
     }
   },
-  "tags": [
+  "security": [
     {
-      "name": "agents",
-      "x-displayName": "Agents"
-    },
-    {
-      "name": "analytics",
-      "x-displayName": "Analytics"
-    },
-    {
-      "name": "billing",
-      "x-displayName": "Billing"
-    },
-    {
-      "name": "breaks",
-      "x-displayName": "Breaks"
-    },
-    {
-      "name": "campaigns",
-      "x-displayName": "Campaigns"
-    },
-    {
-      "name": "conversations",
-      "x-displayName": "Conversations"
-    },
-    {
-      "name": "customers",
-      "x-displayName": "Customers"
-    },
-    {
-      "name": "flows",
-      "x-displayName": "Flows"
-    },
-    {
-      "name": "messages",
-      "x-displayName": "Messages"
-    },
-    {
-      "name": "queue-hours",
-      "x-displayName": "Queue Hours"
-    },
-    {
-      "name": "queues",
-      "x-displayName": "Queues"
-    },
-    {
-      "name": "quick-replies",
-      "x-displayName": "Quick Replies"
-    },
-    {
-      "name": "security",
-      "x-displayName": "Security"
-    },
-    {
-      "name": "settings",
-      "x-displayName": "Settings"
-    },
-    {
-      "name": "storage",
-      "x-displayName": "Storage"
-    },
-    {
-      "name": "telegram",
-      "x-displayName": "Telegram"
-    },
-    {
-      "name": "templates",
-      "x-displayName": "Templates"
-    },
-    {
-      "name": "tickets",
-      "x-displayName": "Tickets"
-    },
-    {
-      "name": "users",
-      "x-displayName": "Users"
-    },
-    {
-      "name": "whatsapp",
-      "x-displayName": "Whatsapp"
+      "bearerAuth": []
     }
-  ]
+  ],
+  "paths": {
+    "/messages/send": {
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Send Message",
+        "description": "Enfileira o envio de uma mensagem (WhatsApp/Telegram). Use `context.message_id` para reply/quote.",
+        "responses": {
+          "200": {
+            "description": "Mensagem enfileirada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "enqueued": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "$ref": "#/components/schemas/Message"
+                    },
+                    "channel": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageSendPayload"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/send/template": {
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Send Template Message (WhatsApp)",
+        "description": "Dispara uma mensagem de **template** (HSM). Aceita formato novo ou legado.",
+        "responses": {
+          "200": {
+            "description": "Template enfileirado"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateSendPayload"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/check-24h/{user_id}": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Check 24h Window",
+        "description": "Indica se é permitido envio *free-form* (WhatsApp) com base no último inbound do usuário.",
+        "responses": {
+          "200": {
+            "description": "Janela de 24h",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "within24h": {
+                      "type": "boolean"
+                    },
+                    "can_send_freeform": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User ID (chave da conversa)"
+          }
+        ]
+      }
+    },
+    "/messages/read-status/{user_id}": {
+      "put": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Update Last Read",
+        "description": "Atualiza o `last_read` do usuário.",
+        "responses": {
+          "200": {
+            "description": "Atualizado"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "last_read"
+                ],
+                "properties": {
+                  "last_read": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/read-status": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "List Read Status",
+        "description": "Lista `user_id` + `last_read` conhecidos.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/messages/unread-counts": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Unread Counters",
+        "description": "Lista quantidade de mensagens **não lidas** por `user_id`.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/messages/{user_id}": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "List User Messages",
+        "description": "Lista mensagens de um usuário ordenadas por data (limites podem ser aplicados no backend).",
+        "responses": {
+          "200": {
+            "description": "Mensagens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "List Customers",
+        "description": "Paginação e busca por nome/telefone/user_id.",
+        "responses": {
+          "200": {
+            "description": "Página de clientes"
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Termo de busca"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Página (>=1)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                10,
+                20,
+                30,
+                40
+              ],
+              "default": 10
+            },
+            "description": "Itens por página"
+          }
+        ]
+      }
+    },
+    "/customers/{user_id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Get Customer",
+        "description": "Retorna dados do cliente e ticket aberto (se existir).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Update Customer",
+        "description": "Atualiza `name` e `phone`.",
+        "responses": {
+          "200": {
+            "description": "Atualizado"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "phone"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Patch Customer",
+        "description": "Atualização parcial (`name`/`phone`).",
+        "responses": {
+          "200": {
+            "description": "Atualizado"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Delete Customer",
+        "description": "Exclui cliente por `user_id`.",
+        "responses": {
+          "204": {
+            "description": "Excluído"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/conversations": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "List Conversations (assigned)",
+        "description": "Conversas atribuídas ao agente informado (filtro por filas).",
+        "responses": {
+          "200": {
+            "description": "Lista de conversas"
+          }
+        },
+        "parameters": [
+          {
+            "name": "assigned_to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "E-mail do atendente (obrigatório)"
+          },
+          {
+            "name": "filas",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lista CSV de filas (obrigatório)"
+          }
+        ]
+      }
+    },
+    "/conversations/queues": {
+      "get": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "List Unassigned Queue",
+        "description": "Itens de fila **não atribuídos** nas filas informadas.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "filas",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lista CSV de filas (obrigatório)"
+          }
+        ]
+      }
+    },
+    "/conversations/queues/next": {
+      "put": {
+        "tags": [
+          "Conversations"
+        ],
+        "summary": "Assign Next from Queues",
+        "description": "Atribui o próximo ticket disponível dentre as filas informadas ao atendente `email`.",
+        "responses": {
+          "200": {
+            "description": "Ticket atribuído"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "queues"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "queues": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns": {
+      "get": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "List Campaigns",
+        "description": "Lista campanhas com agregados de progresso (itens processados, enviados, lidos, falhados).",
+        "responses": {
+          "200": {
+            "description": "Campanhas"
+          }
+        },
+        "parameters": [
+          {
+            "name": "tab",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "active",
+                "finished",
+                "failed"
+              ],
+              "default": "all"
+            },
+            "description": "Aba de filtro"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Busca por nome"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "Create Campaign (CSV + Template)",
+        "description": "Cria uma campanha a partir de um **CSV** (campo `file`) e metadados (`meta` JSON) **ou** campos planos (`name`, `template_name`, `language_code`, `components` JSON e `start_at`).",
+        "responses": {
+          "201": {
+            "description": "Campanha criada"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "meta": {
+                    "type": "string",
+                    "description": "JSON com { name, start_at, template{ name, language{ code }, components? } }"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "template_name": {
+                    "type": "string"
+                  },
+                  "language_code": {
+                    "type": "string"
+                  },
+                  "components": {
+                    "type": "string",
+                    "description": "JSON string"
+                  },
+                  "start_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{id}": {
+      "get": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "Get Campaign",
+        "description": "Detalhe da campanha (com agregados).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID da campanha"
+          }
+        ]
+      }
+    },
+    "/campaigns/{id}/items": {
+      "get": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "List Campaign Items",
+        "description": "Lista itens (linhas CSV) associados à campanha com status por item.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID da campanha"
+          }
+        ]
+      }
+    },
+    "/tickets/history/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Download Ticket PDF",
+        "description": "Gera/baixa o PDF do ticket normalizado.",
+        "responses": {
+          "200": {
+            "description": "PDF",
+            "content": {
+              "application/pdf": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do ticket"
+          }
+        ]
+      }
+    },
+    "/tickets/history/{id}": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get Ticket History",
+        "description": "Retorna ticket, e opcionalmente mensagens e anexos (`include=messages,attachments`).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do ticket"
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Ex.: `messages,attachments`"
+          },
+          {
+            "name": "messages_limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Limite de mensagens (padrão 100, máx. 500"
+          }
+        ]
+      }
+    },
+    "/tickets/last/{user_id}": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get User Last Ticket",
+        "description": "Último ticket do usuário.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tickets/{user_id}": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get Open Ticket (by user)",
+        "description": "Ticket aberto atual do usuário (se houver).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Close Last Open Ticket (by user)",
+        "description": "Fecha o último ticket aberto do usuário.",
+        "responses": {
+          "200": {
+            "description": "Ticket fechado"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "closed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/user/{user_id}": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "List Closed Tickets (by user)",
+        "description": "Lista de tickets fechados do usuário (ordem decrescente).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/tickets/transferir": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Transfer Ticket to Queue",
+        "description": "Transfere atendimento do `from_user_id` para `to_fila` (e opcionalmente `to_assigned_to`).",
+        "responses": {
+          "201": {
+            "description": "Transferência criada"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from_user_id",
+                  "to_fila",
+                  "transferido_por"
+                ],
+                "properties": {
+                  "from_user_id": {
+                    "type": "string"
+                  },
+                  "to_fila": {
+                    "type": "string"
+                  },
+                  "to_assigned_to": {
+                    "type": "string"
+                  },
+                  "transferido_por": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/history": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Search Closed Tickets",
+        "description": "Pesquisa no histórico de tickets fechados por período e texto.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Termo de busca"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Página"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                10,
+                20,
+                30,
+                40
+              ],
+              "default": 10
+            },
+            "description": "Itens por página"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Data inicial (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Data final (YYYY-MM-DD)"
+          }
+        ]
+      }
+    },
+    "/agents": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "List Agents",
+        "description": "Usuários com `perfil=atendente` (id, name, lastname, email, status, filas, created_at, session_id).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/agents/{email}": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Get Agent by Email",
+        "description": "Dados do atendente.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail do atendente"
+          }
+        ]
+      }
+    },
+    "/agents/status/{email}": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Get Agent Status",
+        "description": "Status atual do atendente por e-mail (inclui campos de referência usados no front).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail do atendente"
+          }
+        ]
+      }
+    },
+    "/agents/session/{email}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Open/Update Agent Session",
+        "description": "Abre ou atualiza a sessão ativa do atendente (`session`).",
+        "responses": {
+          "200": {
+            "description": "Sessão atualizada"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session"
+                ],
+                "properties": {
+                  "session": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/status/{session}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Close Session (by session token)",
+        "description": "Fecha/atualiza status da sessão informada.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador da sessão"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Close Session (POST)",
+        "description": "Equivalente ao PUT para encerrar sessão.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador da sessão"
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Close Session (PATCH)",
+        "description": "Equivalente ao PUT/POST para encerrar sessão.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador da sessão"
+          }
+        ]
+      }
+    },
+    "/agents/breaks/{email}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Start Break",
+        "description": "Inicia pausa do atendente (`reason_id` **ou** `reason` texto).",
+        "responses": {
+          "200": {
+            "description": "Pausa iniciada"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason_id": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/resume/{email}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Resume from Break",
+        "description": "Encerra pausa do atendente.",
+        "responses": {
+          "200": {
+            "description": "Pausa encerrada"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail"
+          }
+        ]
+      }
+    },
+    "/agents/presence/{email}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Update Presence (PUT)",
+        "description": "Atualiza presença do atendente (online/offline) usando `session` e/ou `email` no corpo.",
+        "responses": {
+          "200": {
+            "description": "Presença atualizada"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "session": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "online": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Update Presence (POST)",
+        "description": "Mesma operação via POST.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "E-mail"
+          }
+        ]
+      }
+    },
+    "/agents/heartbeat": {
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Heartbeat (POST)",
+        "description": "Atualiza batimento/sinal de vida do atendente (mantém sessão ativa).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "session": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Heartbeat (PUT)",
+        "description": "Variante via PUT do heartbeat.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "session": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/{id}": {
+      "delete": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Delete Agent",
+        "description": "Remove usuário com `perfil=atendente` pelo `id`.",
+        "responses": {
+          "204": {
+            "description": "Excluído"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/realtime": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Realtime Tickets",
+        "description": "Tickets em tempo real por status (aguardando / em_atendimento).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/analytics/metrics/summary": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Metrics Summary",
+        "description": "KPIs gerais por período/filas/canais.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Data inicial (ISO 8601)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Data final (ISO 8601)"
+          },
+          {
+            "name": "filas",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "CSV de filas"
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Canal (opcional)"
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/queues": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Metrics by Queue",
+        "description": "Resumo por fila (quantidade, SLAs etc.).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filas",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/frt": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "First Response Time (FRT)",
+        "description": "Distribuição de FRT por canal/fila/dia.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filas",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "channel",
+                "queue",
+                "day"
+              ],
+              "default": "channel"
+            },
+            "description": "Agrupamento"
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/agents/art": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Agents Average Response Time (ART)",
+        "description": "Tempo médio de resposta por agente.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fila",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/duration-by-queue": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Conversation Duration by Queue",
+        "description": "Duração média de conversas por fila/canal.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fila",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/abandonment": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Abandonment",
+        "description": "Taxa de abandono/sem atendimento por fila/canal.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fila",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/aging-by-queue": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Aging by Queue",
+        "description": "Tickets aguardando vs. em atendimento por fila.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fila",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "canal",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/analytics/agents/realtime": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Agents Realtime",
+        "description": "Resumo de status dos atendentes (online, em pausa, em atendimento).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/analytics/metrics/new-clients": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "New Clients",
+        "description": "Novos clientes por dia/semana/mês.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "default": "day"
+            },
+            "description": "Agrupar"
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/feedback": {
+      "post": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Record Feedback (NPS/CSAT)",
+        "description": "Registra feedback (`type=nps|csat`, `score`, `channel`, `ticket_id?`).",
+        "responses": {
+          "201": {
+            "description": "Registrado"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "score"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "nps",
+                      "csat"
+                    ]
+                  },
+                  "score": {
+                    "type": "number"
+                  },
+                  "channel": {
+                    "type": "string"
+                  },
+                  "ticket_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/metrics/series/nps": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "NPS Series",
+        "description": "Série temporal de NPS por bucket (dia/semana/mês).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bucket",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "default": "day"
+            },
+            "description": "Bucket de tempo"
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/series/csat": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "CSAT Series",
+        "description": "Série temporal de CSAT por bucket (dia/semana/mês).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bucket",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "default": "day"
+            },
+            "description": "Bucket de tempo"
+          }
+        ]
+      }
+    },
+    "/analytics/metrics/feedback/responses": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Feedback Responses",
+        "description": "Lista respostas registradas (filtros por tipo/canal/tempo).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "nps|csat"
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
 }

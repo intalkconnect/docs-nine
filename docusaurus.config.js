@@ -73,36 +73,16 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
+            href: 'https://ninechat.com.br',
+            label: 'Website',
             position: 'right',
           },
         ],
       },
       footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              { label: 'Docs Intro', to: '/docs/intro' },
-              { label: 'API (root)', to: '/' },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              { label: 'Stack Overflow', href: 'https://stackoverflow.com/questions/tagged/docusaurus' },
-              { label: 'Discord', href: 'https://discordapp.com/invite/docusaurus' },
-              { label: 'X', href: 'https://x.com/docusaurus' },
-            ],
-          },
-          {
-            title: 'More',
-            items: [{ label: 'Blog', to: '/blog' }, { label: 'GitHub', href: 'https://github.com/facebook/docusaurus' }],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} NineChat.`,
+  style: 'dark',
+  copyright: `Copyright © ${new Date().getFullYear()} NineChat. Todos os direitos reservados.`,
+}
       },
       prism: {
         theme: prismThemes.github,

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>NineChat API Reference</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="index,follow" />
+    <link rel="icon" href="favicon.ico" />
+    <!-- RapiDoc web component -->
+    <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+    <style>
+      /* ajustes visuais simples (sem exagero) */
+      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; }
+      header.brand {
+        position: fixed; top: 0; left: 0; right: 0; height: 56px;
+        display:flex; align-items:center; gap:12px; padding:0 16px;
+        border-bottom: 1px solid #e5e7eb; background:#fff; z-index: 2;
+      }
+      header.brand img { height: 28px; }
+      header.brand .title { font-weight: 600; font-size: 16px; color:#111827; }
+      rapi-doc { margin-top:56px; } /* empurra o doc pra baixo do header */
+      @media (max-width: 640px){ header.brand .title{ display:none; } }
+    </style>
+  </head>
+  <body>
+    <header class="brand">
+      <!-- opcional: troque por seu logo/URL -->
+      <img src="https://ninechat.com.br/wp-content/uploads/2024/01/favicon-32x32-1.png" alt="NineChat" />
+      <div class="title">NineChat — API Reference</div>
+    </header>
+
+    <rapi-doc
+      spec-url="/openapi.json"
+      render-style="read"
+      theme="light"
+      layout="row"                     <!-- nav à esquerda + conteúdo à direita -->
+      show-header="false"              <!-- já temos header fixo -->
+      primary-color="#111827"          <!-- cor principal (cinza escuro) -->
+      nav-bg-color="#f3f4f6"           <!-- fundo do menu -->
+      sort-tags="true"
+      sort-endpoints-by="path"
+      show-method-in-nav-bar="as-colored-text"
+      use-path-in-nav-bar="true"
+      schema-style="table"
+      schema-description-expanded="true"
+      allow-try="true"                 <!-- habilita “Try It” se servidores/segurança estiverem definidos -->
+      allow-spec-url-load="false"      <!-- evita trocar a spec pela UI -->
+      allow-spec-file-load="false"
+    >
+      <!-- opcional: se quiser forçar um servidor específico caso seu spec tenha vários -->
+      <!-- <div slot="footer">© NineChat</div> -->
+    </rapi-doc>
+  </body>
+</html>

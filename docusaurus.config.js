@@ -6,23 +6,17 @@ const config = {
   title: 'Docs Ninechat',
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
-
   future: { v4: true },
-
   url: 'https://docs.ninechat.com.br',
   baseUrl: '/',
-
   organizationName: 'Nine Chat',
   projectName: 'ninedocs',
-
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
   },
-
   presets: [
     [
       'classic',
@@ -43,9 +37,10 @@ const config = {
           onUntruncatedBlogPosts: 'warn',
         },
         theme: { customCss: './src/css/custom.css' },
+        // IMPORTANTE: Desabilitar a página inicial padrão
+        pages: false,
       }),
     ],
-
     // Redocusaurus: OpenAPI na RAIZ (/)
     [
       'redocusaurus',
@@ -61,7 +56,6 @@ const config = {
       },
     ],
   ],
-
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -116,5 +110,4 @@ const config = {
       },
     }),
 };
-
 export default config;

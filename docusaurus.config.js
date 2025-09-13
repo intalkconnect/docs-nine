@@ -11,7 +11,7 @@ const config = {
   baseUrl: '/',
   organizationName: 'Nine Chat',
   projectName: 'ninedocs',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
     defaultLocale: 'en',

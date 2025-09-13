@@ -4,7 +4,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Docs Ninechat',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'API Documentation for Nine Chat',
   favicon: 'img/favicon.ico',
   future: { v4: true },
   url: 'https://docs.ninechat.com.br',
@@ -24,38 +24,39 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          docItemComponent: '@theme/ApiItem', // Usar componente API
         },
         blog: {
           showReadingTime: true,
           feedOptions: { type: ['rss', 'atom'], xslt: true },
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
         },
         theme: { customCss: './src/css/custom.css' },
-        // IMPORTANTE: Desabilitar a página inicial padrão
-        pages: false,
+        pages: false, // Remove página inicial padrão
       }),
     ],
-    // Redocusaurus: OpenAPI na RAIZ (/)
+  ],
+  plugins: [
     [
-      'redocusaurus',
+      'docusaurus-plugin-openapi-docs',
       {
-        specs: [
-          {
-            id: 'api',
-            spec: 'static/openapi.json', // garanta este arquivo no repo
-            route: '/',                   // documentação em https://docs.ninechat.com.br/
+        id: 'api', // plugin id
+        docsPluginId: 'classic', // configured for preset-classic
+        config: {
+          ninechat: {
+            specPath: 'static/openapi.json',
+            outputDir: 'docs/api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+            },
           },
-        ],
-        // theme: { /* opções Redoc (opcional) */ },
+        },
       },
     ],
   ],
+  themes: ['docusaurus-theme-openapi-docs'], // Tema específico para OpenAPI
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -64,12 +65,11 @@ const config = {
         title: 'Docs Ninechat',
         logo: { alt: 'Ninechat Logo', src: 'img/logo.svg' },
         items: [
-          { to: '/', label: 'API', position: 'left' }, // raiz = Redoc
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Docs',
+            label: 'API',
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
@@ -80,13 +80,37 @@ const config = {
         ],
       },
       footer: {
-  style: 'dark',
-  copyright: `Copyright © ${new Date().getFullYear()} NineChat. Todos os direitos reservados.`,
-},
+        style: 'dark',
+        links: [
+          {
+            title: 'Documentação',
+            items: [
+              { label: 'API Reference', to: '/docs/api' },
+              { label: 'Guias', to: '/docs/intro' },
+            ],
+          },
+          {
+            title: 'Recursos',
+            items: [
+              { label: 'Blog', to: '/blog' },
+              { label: 'Changelog', to: '/blog/tags/changelog' },
+            ],
+          },
+          {
+            title: 'Suporte',
+            items: [
+              { label: 'Contato', href: 'https://ninechat.com.br/contato' },
+              { label: 'Website', href: 'https://ninechat.com.br' },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} NineChat. Todos os direitos reservados.`,
+      },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
       },
     }),
 };
+
 export default config;

@@ -82,7 +82,7 @@ const config = {
       footer: {
   style: 'dark',
   copyright: `Copyright © ${new Date().getFullYear()} NineChat. Todos os direitos reservados.`,
-}
+},
       },
       prism: {
         theme: prismThemes.github,
